@@ -1,35 +1,31 @@
-# Dependencies
+# Dependencies & Environments
 node_modules/
 .pnp
 .pnp.js
-
-# Next.js build output
-.next/
-out/
-
-# Local Data & Databases
-data/
-*.db
-*.sqlite
-
-# Python artifacts
-*.pyc
-__pycache__/
-.pytest_cache/
 .venv/
 venv/
 ENV/
+*.pyc
+__pycache__/
+.pytest_cache/
 
-# Environment variables & secrets (CRITICAL for Actions/CI safety)
+# Production & Build outputs
+.next/
+out/
+vercel.json
+
+# Local Configurations & Secrets
 .env
 .env.local
 .env.production.local
 .env.development.local
 .env.*.local
 
-# Project specific snapshots
-collectors/change_monitor/snapshots/
+# Databases & Cache (Since you have a /db folder)
+*.db
+*.sqlite
+.turbo/
 
-# GitHub Actions / CI Specifics
-# (Uncomment the line below if your runner generates local logs you want to ignore)
-# .github/workflows/*.log
+# OS Specific Files
+.DS_Store
+Thumbs.db
