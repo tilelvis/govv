@@ -1,0 +1,9 @@
+node_modules/
+.next/
+data/
+*.db
+*.pyc
+__pycache__/
+.env
+.env.local
+collectors/change_monitor/snapshots/

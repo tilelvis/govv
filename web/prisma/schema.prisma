@@ -1,0 +1,97 @@
+// KE GovVault — Prisma schema (read-only from Python-managed PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")  // Neon unpooled for migrations
+}
+
+model Document {
+  id              Int       @id @default(autoincrement()) @map("id")
+  source          String    @map("source")                    // gazette, court_ruling, hansard, etc.
+  title           String    @map("title")
+  description     String?   @map("description") @db.Text
+  content         String?   @map("content") @db.Text
+  // contentTsv is a generated tsvector column — not managed by Prisma
+  pdfUrl          String?   @map("pdf_url")
+  pdfStorageKey   String?   @map("pdf_storage_key")
+  publishedDate   DateTime? @map("published_date")
+  fetchedAt       DateTime  @map("fetched_at")
+  pageCount       Int?      @map("page_count")
+  fileSizeBytes   Int?      @map("file_size_bytes")
+  fileHash        String?   @map("file_hash")
+  metadataJson    Json?     @map("metadata_json")
+  aiSummary       String?   @map("ai_summary") @db.Text
+  aiTopics        String[]  @map("ai_topics")
+  aiEntities      Json?     @map("ai_entities")
+  isProcessed     Boolean   @map("is_processed") @default(false)
+
+  entities        Entity[]
+
+  @@index([source, publishedDate(sort: Desc)])
+  @@index([fetchedAt(sort: Desc)])
+  @@map("documents")
+}
+
+model Entity {
+  id              Int       @id @default(autoincrement()) @map("id")
+  entityType      String    @map("entity_type")           // person, organization, location, amount, date, law, citation
+  name            String    @map("name")
+  normalizedName  String    @map("normalized_name")
+  documentId      Int       @map("document_id")
+  count           Int       @map("count") @default(1)
+  firstSeen       DateTime  @map("first_seen")
+  metadataJson    Json?     @map("metadata_json")
+
+  document        Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([entityType, normalizedName])
+  @@index([documentId])
+  @@map("entities")
+}
+
+model CollectionRun {
+  id              Int       @id @default(autoincrement()) @map("id")
+  source          String    @map("source")
+  startedAt       DateTime  @map("started_at")
+  finishedAt      DateTime? @map("finished_at")
+  status          String    @map("status")
+  documentsFound  Int       @map("documents_found") @default(0)
+  documentsNew    Int       @map("documents_new") @default(0)
+  errors          String?   @map("errors") @db.Text
+
+  @@index([source, startedAt(sort: Desc)])
+  @@map("collection_runs")
+}
+
+model AlertRule {
+  id              Int       @id @default(autoincrement()) @map("id")
+  name            String    @map("name")
+  source          String?   @map("source")
+  keyword         String?   @map("keyword")
+  entityName      String?   @map("entity_name")
+  channel         String    @map("channel") @default("telegram")
+  enabled         Boolean   @map("enabled") @default(true)
+  createdAt       DateTime  @map("created_at") @default(now())
+  lastFired       DateTime? @map("last_fired")
+
+  @@map("alert_rules")
+}
+
+model AlertsLog {
+  id              Int        @id @default(autoincrement()) @map("id")
+  sentAt          DateTime   @map("sent_at") @default(now())
+  ruleId          Int?       @map("rule_id")
+  channel         String     @map("channel")
+  documentId      Int?       @map("document_id")
+  subject         String?    @map("subject")
+  body            String?    @map("body") @db.Text
+  status          String?    @map("status")
+  error           String?    @map("error")
+
+  @@index([sentAt(sort: Desc)])
+  @@map("alerts_log")
+}

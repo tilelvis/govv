@@ -1,0 +1,8 @@
+{
+  "name": "ke-govvault-ai",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "z-ai-web-dev-sdk": "^0.0.18"
+  }
+}

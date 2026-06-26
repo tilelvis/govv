@@ -1,0 +1,25 @@
+name: Gazette Collector
+
+on:
+  schedule:
+    # Run daily at 4:00 AM EAT = 1:00 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Run Gazette Collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python collectors/gazette/src/gazette.py
