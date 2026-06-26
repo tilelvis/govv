@@ -158,4 +158,4 @@ To add a new document source (e.g., court rulings):
 
 ## License
 
-MIT# govv
+MIT
