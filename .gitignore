@@ -1,9 +1,35 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
 .next/
+out/
+
+# Local Data & Databases
 data/
 *.db
+*.sqlite
+
+# Python artifacts
 *.pyc
 __pycache__/
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# Environment variables & secrets (CRITICAL for Actions/CI safety)
 .env
 .env.local
+.env.production.local
+.env.development.local
+.env.*.local
+
+# Project specific snapshots
 collectors/change_monitor/snapshots/
+
+# GitHub Actions / CI Specifics
+# (Uncomment the line below if your runner generates local logs you want to ignore)
+# .github/workflows/*.log
