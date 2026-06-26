@@ -1,4 +1,4 @@
-# 🏛️ KE GovVault
+# 🏛️ GovVault
 
 > Full-text searchable archive of Kenya government documents — Gazette notices, court rulings, Hansard debates, budgets, and more — with AI-powered entity extraction and analysis.
 
